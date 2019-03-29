@@ -1,0 +1,95 @@
+#include<bits/stdc++.h>
+using namespace std;
+int arr[1000][1000];
+int min_cost[1000][1000];
+int visited[1000][1000];
+int dx[]= {0,0,1,-1};
+int dy[]= {1,-1,0,0};
+struct _2D_node
+{
+
+    int row;
+    int clm;
+    int cost;
+
+    _2D_node() {}
+
+    _2D_node(int r,int c,int cst)
+    {
+
+        row = r;
+        clm = c;
+        cost = cst;
+    }
+    bool operator < (_2D_node x) const
+    {
+        return cost > x.cost;
+    }
+
+};
+
+int main()
+{
+    int test;
+    int r,c;
+    scanf("%d",&test);
+
+    while(test--)
+    {
+        scanf("%d%d\n",&r,&c);
+
+        for(int i=0; i<r; i++)
+        {
+            for(int j=0; j<c; j++)
+            {
+                min_cost[i][j] = -1;
+                visited[i][j] = 0;
+
+            }
+        }
+        for(int i=0; i<r; i++)
+        {
+            for(int j=0; j<c; j++)
+            {
+                scanf("%d",&arr[i][j]);
+            }
+        }
+
+        priority_queue<_2D_node> Q;
+
+        Q.push(_2D_node(0,0,arr[0][0]));
+        min_cost[0][0] = arr[0][0];
+
+        while(1)
+        {
+            _2D_node now = Q.top();
+            Q.pop();
+
+            if(now.row == r - 1 && now.clm == c - 1)
+            {
+                printf("%d\n",now.cost);
+                break;
+            }
+
+            if(visited[now.row][now.clm]==1)
+                continue;
+
+            visited[now.row][now.clm] = 1;
+
+            for(int i=0; i<4; i++)
+            {
+                int x = dx[i] + now.row;
+                int y = dy[i] + now.clm;
+
+                if(x>=0 and x<r and y>=0 and y<c && (min_cost[x][y]==-1 || min_cost[now.row][now.clm]+arr[x][y]<min_cost[x][y]))
+                {
+                     min_cost[x][y] = min_cost[now.row][now.clm]+arr[x][y];
+                     Q.push(_2D_node(x,y,min_cost[x][y]));
+                }
+            }
+
+
+        }
+    }
+    return 0;
+}
