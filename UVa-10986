@@ -1,0 +1,83 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define inf 1000000000
+struct data
+{
+    int city,dist;
+    bool operator<(const data& p) const
+    {
+        return dist>p.dist;
+    }
+};
+vector<int> edge[50009],cost[50009];
+int d[50009];
+int visited[50009];
+priority_queue<data>q;
+void dijkstra(int src)
+{
+    for(int i=0; i<=50009; i++)  d[i]=inf;
+    d[src]=0;
+    data u,v;
+    u.city=src;
+    u.dist=0;
+    q.push(u);
+    while(!q.empty())
+    {
+        u=q.top();
+        q.pop();
+        if(visited[u.city])
+            continue;
+        visited[u.city] = 1;
+        if(d[u.city]<u.dist) continue;//Optimization.itemoddhe konota ese jdi update kore fele then r korar drkr nei. CF 450D
+        int ucost=d[u.city];
+        for(int j=0; j<edge[u.city].size(); j++)
+        {
+            v.city=edge[u.city][j];
+            v.dist=ucost+cost[u.city][j];
+            if(v.dist<d[v.city])
+            {
+                d[v.city]=v.dist;
+                q.push(v);
+            }
+        }
+    }
+
+}
+int main()
+{
+    int t;
+    scanf("%d",&t);
+    for(int p=1; p<=t; p++)
+    {
+
+
+        int e,n,u,v,w;
+        int source,destination;
+        scanf("%d %d",&n,&e);
+        scanf("%d %d",&source,&destination);
+        for(int i=1; i<=e; i++)
+        {
+            scanf("%d %d %d",&u,&v,&w);
+            edge[u].push_back(v);
+            edge[v].push_back(u);
+            cost[u].push_back(w);
+            cost[v].push_back(w);
+        }
+        dijkstra(source);
+        if(d[destination]==1000000000)
+        {
+            printf("Case #%d: unreachable\n",p);
+        }
+        else
+            printf("Case #%d: %d\n",p,d[destination]);
+
+        for(int i=0; i<=50000; i++)
+        {
+            edge[i].clear();
+            cost[i].clear();
+            visited[i] = 0;
+        }
+    }
+    return 0;
+}
+
